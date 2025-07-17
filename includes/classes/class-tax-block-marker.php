@@ -221,8 +221,11 @@ class TaxBlockMarker {
      */
     function admin_scripts() {
 
-        // This conditional is used as this is only needed on the LMS options screen.
-        if ( get_current_screen()->taxonomy == 'dmg_rml_block_marker' ) {
+        $screen           = get_current_screen();
+        $current_taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_STRING );
+
+        // This conditional checks the screen ID and taxonomy parameter.
+        if ( $screen && 'edit' === $screen->base && 'dmg_rml_block_marker' === $current_taxonomy ) {
 
             wp_enqueue_style(
                 'dmg-rml-posts-list',
