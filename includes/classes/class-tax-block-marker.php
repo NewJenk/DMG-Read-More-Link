@@ -33,6 +33,11 @@ class TaxBlockMarker {
 
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ), 99 );
 
+        // Custom column.
+        add_filter( 'manage_edit-post_columns', array( $this, 'add_post_type_column' ) );
+        add_action( 'manage_posts_custom_column', array( $this, 'render_post_type_column' ), 10, 2 );
+        add_action( 'manage_pages_custom_column', array( $this, 'render_post_type_column' ), 10, 2 );
+
     }
 
 
@@ -225,6 +230,68 @@ class TaxBlockMarker {
                 array(),
                 '1.0.0'
             );
+
+        }
+
+    }
+
+
+
+
+    /**
+     * Adds a 'Post Type' column to the posts list table header.
+     */
+    public function add_post_type_column( $columns ) {
+    
+        global $pagenow;
+    
+        if ( is_admin() && 'edit.php' === $pagenow ) {
+    
+            $current_taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_STRING );
+            $current_term     = filter_input( INPUT_GET, 'term', FILTER_SANITIZE_STRING );
+
+            if ( 'dmg_rml_block_marker' === $current_taxonomy && 'has-read-more-block' === $current_term ) {
+
+                // Create a new columns array to insert the Post Type column after the title.
+                $new_columns = [];
+    
+                foreach ( $columns as $key => $title ) {
+
+                    $new_columns[ $key ] = $title;
+
+                    if ( 'title' === $key ) {
+
+                        $new_columns['post_type'] = __( 'Post Type', 'dmg-rml' );
+
+                    }
+
+                }
+
+                return $new_columns;
+
+            }
+
+        }
+
+        return $columns;
+
+    }
+
+    /**
+     * Renders the content for the custom 'Post Type' column.
+     */
+    public function render_post_type_column( $column_name, $post_id ) {
+        // This function only needs to check the column name, as the column
+        // will only be added on the correct screen.
+        if ( 'post_type' === $column_name ) {
+
+            $post_type_object = get_post_type_object( get_post_type( $post_id ) );
+
+            if ( $post_type_object ) {
+    
+                echo esc_html( $post_type_object->labels->singular_name );
+
+            }
 
         }
 
