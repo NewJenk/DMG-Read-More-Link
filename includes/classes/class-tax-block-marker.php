@@ -25,9 +25,7 @@ class TaxBlockMarker {
 
 		add_filter( 'admin_head', array( $this, 'admin_menu_highlight' ) );
 
-		add_filter( 'post_type_labels_post', array( $this, 'change_post_labels' ) );
-
-		add_action( 'all_admin_notices', array( $this, 'add_post_list_description' ) );
+		add_action( 'admin_notices', array( $this, 'add_post_list_description' ) );
 
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ), 99 );
 
@@ -81,7 +79,7 @@ class TaxBlockMarker {
 			)
 		);
 
-		$post_types_array = apply_filters( 'dmg_rml_block_marker_post_types', array( 'post' ) );
+		$post_types_array = array( 'post', 'page' );
 
 		// Register "DMG_RML Marker" taxonomy.
 		register_taxonomy( 'dmg_rml_block_marker', $post_types_array, $args );
@@ -92,14 +90,25 @@ class TaxBlockMarker {
 
 
 	public function add_posts_link_to_settings() {
+
 		add_submenu_page(
-			'edit.php',
-			__( 'Posts with DMG Read More Link Block', 'simple-read-more-link' ),
-			__( 'DMG Read More Link Posts', 'simple-read-more-link' ),
+			'options-general.php',
+			__( 'Posts with DMG Read More Link Block', 'dmg-rml' ),
+			__( 'DMG Read More Link Posts and Pages', 'dmg-rml' ),
 			'manage_options',
 			// Use the destination URL as the menu slug.
 			'edit.php?taxonomy=dmg_rml_block_marker&term=has-read-more-block'
 		);
+
+		// add_submenu_page(
+		// 	'options-general.php',
+		// 	__( 'Posts with DMG Read More Link Block', 'dmg-rml' ),
+		// 	__( 'DMG Read More Link Posts and Pageshuhu', 'dmg-rml' ),
+		// 	'manage_options',
+		// 	// Use the destination URL as the menu slug.
+		// 	'edit.php?taxonomy=dmg_rml_block_marker&term=has-read-more-block&post_type=page'
+		// );
+
 	}
 
 
@@ -118,12 +127,59 @@ class TaxBlockMarker {
         // Check if we are on the specific filtered post list page.
         if ( 'dmg_rml_block_marker' === $current_taxonomy && 'has-read-more-block' === $current_term ) {
             
-            // Force the "Posts" menu to be the active parent.
-            $parent_file = 'edit.php';
+            // Force the "Settings" menu to be the active parent.
+            $parent_file = 'options-general.php';
             
-            // Set the submenu file.
             $submenu_file = 'edit.php?taxonomy=dmg_rml_block_marker&term=has-read-more-block';
+
+            // For the 'Pages' screen, WordPress will override the parent. We fix this with JS (see below).
+            add_action( 'admin_footer-edit.php', array( $this, 'force_menu_highlight_script' ) );
+
         }
+
+    }
+
+
+
+    /**
+     * Gotta use JS for this (would have liked to achive a PHP solution but the Pages admin menu is particually stubborn).
+     */
+    public function force_menu_highlight_script() {
+
+        // Only run this script on the 'Pages' tab of our custom view.
+        $current_post_type = filter_input( INPUT_GET, 'post_type', FILTER_SANITIZE_STRING );
+
+        if ( 'page' !== $current_post_type ) {
+
+            return;
+
+        }
+
+        ?>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                // Define the classes to swap
+                const openClasses = ['wp-has-current-submenu', 'wp-menu-open'];
+                const closedClass = 'wp-not-current-submenu';
+
+                // --- Fix the 'Pages' Menu ---
+                // Select both the <li> and its direct <a> child
+                const pagesMenuElements = document.querySelectorAll('#menu-pages, #menu-pages > a.menu-top');
+                pagesMenuElements.forEach(function(element) {
+                    element.classList.remove(...openClasses);
+                    element.classList.add(closedClass);
+                });
+
+                // --- Fix the 'Settings' Menu ---
+                // Select both the <li> and its direct <a> child
+                const settingsMenuElements = document.querySelectorAll('#menu-settings, #menu-settings > a.menu-top');
+                settingsMenuElements.forEach(function(element) {
+                    element.classList.remove(closedClass);
+                    element.classList.add(...openClasses);
+                });
+            });
+        </script>
+        <?php
 
     }
 
@@ -131,47 +187,55 @@ class TaxBlockMarker {
 
 
     /**
-     * Changes the main title by filtering the 'post' post type's labels.
+     * Adds a description and a tabbed navigation to switch between post types.
      */
-    public function change_post_labels( $labels ) {
+    public function add_post_list_description() {
 
         global $pagenow;
 
         // Check that we are on the correct admin page before changing anything.
         if ( is_admin() && 'edit.php' === $pagenow ) {
+
             $current_taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_STRING );
             $current_term     = filter_input( INPUT_GET, 'term', FILTER_SANITIZE_STRING );
 
             if ( 'dmg_rml_block_marker' === $current_taxonomy && 'has-read-more-block' === $current_term ) {
-                $labels->name = __( 'DMG Read More Link Posts', 'simple-read-more-link' );
+    
+                // Display the main description for the screen.
+                echo '<div class="notice notice-info"><p>';
+                    echo esc_html__( 'This is a list of all items that contain the DMG Read More Link block. Use the tabs to switch between Posts and Pages.', 'dmg-rml' );
+                echo '</p></div>';
+
+                // --- Tab Implementation ---
+
+                // Determine the currently active tab from the URL, defaulting to 'post'.
+                $current_post_type = filter_input( INPUT_GET, 'post_type', FILTER_SANITIZE_STRING ) ?? 'post';
+            
+                // Base URL for our links.
+                $base_url = admin_url( 'edit.php' );
+
+                // The query arguments that are common to both tabs.
+                $common_args = array(
+                    'taxonomy' => 'dmg_rml_block_marker',
+                    'term'     => 'has-read-more-block',
+                );
+
+                // Build the specific URLs for each tab.
+                $posts_url = add_query_arg( array_merge( $common_args, array( 'post_type' => 'post' ) ), $base_url );
+                $pages_url = add_query_arg( array_merge( $common_args, array( 'post_type' => 'page' ) ), $base_url );
+
+                ?>
+                <h2 class="nav-tab-wrapper" style="margin-bottom: 15px;">
+                    <a href="<?php echo esc_url( $posts_url ); ?>" class="nav-tab <?php echo 'post' === $current_post_type ? 'nav-tab-active' : ''; ?>">
+                        <?php esc_html_e( 'Posts', 'dmg-rml' ); ?>
+                    </a>
+                    <a href="<?php echo esc_url( $pages_url ); ?>" class="nav-tab <?php echo 'page' === $current_post_type ? 'nav-tab-active' : ''; ?>">
+                        <?php esc_html_e( 'Pages', 'dmg-rml' ); ?>
+                    </a>
+                </h2>
+                <?php
             }
-        }
 
-        // Always return the labels object.
-        return $labels;
-
-    }
-
-
-
-
-    /**
-     * Adds a description below the title.
-     */
-    public function add_post_list_description() {
-
-		global $pagenow;
-
-        // Check that we are on the correct admin page before changing anything.
-        if ( is_admin() && 'edit.php' === $pagenow ) {
-            $current_taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_STRING );
-            $current_term     = filter_input( INPUT_GET, 'term', FILTER_SANITIZE_STRING );
-
-            if ( 'dmg_rml_block_marker' === $current_taxonomy && 'has-read-more-block' === $current_term ) {
-				echo '<div class="notice notice-info"><p>';
-				echo esc_html__( 'This is a list of all posts that contain the DMG Read More Link block.', 'simple-read-more-link' );
-				echo '</p></div>';
-            }
         }
 
     }
@@ -187,8 +251,11 @@ class TaxBlockMarker {
      */
     function admin_scripts() {
 
-        // This conditional is used as this is only needed on the LMS options screen.
-        if ( get_current_screen()->taxonomy == 'dmg_rml_block_marker' ) {
+        $screen           = get_current_screen();
+        $current_taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_STRING );
+
+        // This conditional checks the screen ID and taxonomy parameter.
+        if ( $screen && 'edit' === $screen->base && 'dmg_rml_block_marker' === $current_taxonomy ) {
 
             wp_enqueue_style(
                 'dmg-rml-posts-list',
