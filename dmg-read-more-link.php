@@ -3,7 +3,7 @@
  * Plugin Name:       DMG Read More Link
  * Plugin URI:        https://github.com/NewJenk/DMG-Read-More-Link
  * Description:       A dynamic WordPress block that allows you to easily search for and link to other posts on your site, prepended with 'Read More: '.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 6.0
  * Tested up to:      6.8.1
  * Requires PHP:      7.4
