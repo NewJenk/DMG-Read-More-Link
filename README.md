@@ -31,18 +31,48 @@ The plugin is architected for performance and clean code, using the registry pat
 
 * **Dynamic Link Generation:** Only the Post ID is saved. The plugin fetches the latest post title and URL on page load, ensuring links are always up to date even if post slugs or titles change.
 * **Smart Post Search:** Find posts by searching for their title or by entering a specific Post ID. The interface clearly indicates which search method is being used.
-* **Extreme Scalability:** Architected for enterprise-level performance. Instead of slow metadata queries, the plugin uses a custom, hidden taxonomy for instant lookups, ensuring it runs flawlessly on sites with tens of millions of posts.
-* **Integrated Admin View:** A dedicated screen, conveniently located under the main **"Posts"** menu, provides a complete list of all posts containing the block. This custom view has been tailored with its own title and description for a polished administrative experience.
-* **Powerful WP-CLI Commands:** Includes a full suite of `wp dmg-read-more` commands, allowing developers and administrators to find posts with the block directly from the command line, with advanced filtering by date range.
-* **Well-Organised Codebase:** Built using modern, object-oriented principles within a class-based structure for exceptionally neat, organised and maintainable code with no global dependencies.
+* **Extreme Scalability:** Architected for enterprise-level performance. The plugin uses a custom, hidden taxonomy for instant lookups, ensuring it runs flawlessly on sites with tens of millions of posts.
+* **Integrated Admin View:** A dedicated screen under the main **"Settings"** menu displays all posts and pages with the block. The entire view is built using standard WordPress UI components, providing a fast, familiar and bloat-free experience with tabs to easily switch between content types.
+* **Powerful WP-CLI Commands:** Includes a full suite of `wp dmg-read-more` commands (see below), allowing developers and administrators to find posts with the block directly from the command line, with advanced filtering by date range.
+* **Well-Organised Codebase:** Built using modern, object-oriented principles within a class-based structure for neat, organised and maintainable code.
 * **Translation Ready:** All user-facing strings are fully internationalised and ready for translation into any language.
 * **Developer Friendly:** Core functionality, such as post fetching (`FetchPosts`) and the list of posts (`ListPosts`), has been built into reusable components that can easily be adapted for other blocks or post types.
 
 ## WP-CLI Integration
 
-The plugin implements a high-performance architecture and a powerful **WP-CLI command**.
+A common challenge is finding all instances of a specific block across a large website. Searching through `post_content` is notoriously slow and inefficient, especially on sites with thousands or millions of posts.
+
+To solve this, the plugin implements a high-performance architecture and a powerful **WP-CLI command**.
+
+The plugin assigns a term from a dedicated, hidden taxonomy whenever the `DMG Read More Link` block is used. This allows the command, `wp dmg-read-more search`, to leverage WordPress's highly optimised and indexed taxonomy tables for near-instant lookups, even on databases with tens of millions of posts.
 
 The command includes advanced filtering, allowing developers to find all instances of the block within specific date ranges.
+
+### Command Options
+
+If no date flags are provided, the command defaults to searching within the **last 30 days**.
+
+* `--date-before=<date>`
+    Finds items published before this date (format: Y-m-d).
+* `--date-after=<date>`
+    Finds items published after this date (format: Y-m-d).
+
+### Examples
+
+* **Search for items from the last 30 days (default behaviour):**
+    ```bash
+    wp dmg-read-more search
+    ```
+
+* **Search for items published after 15th January 2025:**
+    ```bash
+    wp dmg-read-more search --date-after=2025-01-15
+    ```
+
+* **Search for items published during January 2025:**
+    ```bash
+    wp dmg-read-more search --date-after=2025-01-01 --date-before=2025-01-31
+    ```
 
 ## FAQ
 
