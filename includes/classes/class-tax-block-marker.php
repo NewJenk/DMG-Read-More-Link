@@ -88,7 +88,7 @@ class TaxBlockMarker {
 			)
 		);
 
-		$post_types_array = apply_filters( 'dmg_rml_block_marker_post_types', array( 'post' ) );
+		$post_types_array = array( 'post', 'page' );
 
 		// Register "DMG_RML Marker" taxonomy.
 		register_taxonomy( 'dmg_rml_block_marker', $post_types_array, $args );
