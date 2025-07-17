@@ -142,7 +142,7 @@ class TaxBlockMarker {
 
 
     /**
-     * Gotta use JS for this (would have liked to achive a PHP solution but the Pages admin menu is particually stubborn).
+     * Gotta use JS for this (would have liked to achive a PHP solution but the Pages admin menu is particularly stubborn).
      */
     public function force_menu_highlight_script() {
 
