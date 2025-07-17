@@ -136,7 +136,7 @@ class BlockFinderCli extends \WP_CLI_Command {
 
         do {
             $query_args = [
-                'post_type'      => 'any',
+                'post_type'      => [ 'post', 'page' ],
                 'posts_per_page' => $batch_size,
                 'paged'          => $paged,
                 'fields'         => 'ids',
