@@ -127,9 +127,9 @@ class TaxBlockMarker {
 
 	public function add_posts_link_to_settings() {
 		add_submenu_page(
-			'edit.php',
-			__( 'Posts with DMG Read More Link Block', 'simple-read-more-link' ),
-			__( 'DMG Read More Link Posts', 'simple-read-more-link' ),
+			'options-general.php',
+			__( 'Posts with DMG Read More Link Block', 'dmg-rml' ),
+			__( 'DMG Read More Link Posts and Pages', 'dmg-rml' ),
 			'manage_options',
 			// Use the destination URL as the menu slug.
 			'edit.php?taxonomy=dmg_rml_block_marker&term=has-read-more-block'
@@ -152,8 +152,8 @@ class TaxBlockMarker {
         // Check if we are on the specific filtered post list page.
         if ( 'dmg_rml_block_marker' === $current_taxonomy && 'has-read-more-block' === $current_term ) {
             
-            // Force the "Posts" menu to be the active parent.
-            $parent_file = 'edit.php';
+            // Force the "Settings" menu to be the active parent.
+            $parent_file = 'options-general.php';
             
             // Set the submenu file.
             $submenu_file = 'edit.php?taxonomy=dmg_rml_block_marker&term=has-read-more-block';
@@ -173,12 +173,16 @@ class TaxBlockMarker {
 
         // Check that we are on the correct admin page before changing anything.
         if ( is_admin() && 'edit.php' === $pagenow ) {
+    
             $current_taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_STRING );
             $current_term     = filter_input( INPUT_GET, 'term', FILTER_SANITIZE_STRING );
 
             if ( 'dmg_rml_block_marker' === $current_taxonomy && 'has-read-more-block' === $current_term ) {
-                $labels->name = __( 'DMG Read More Link Posts', 'simple-read-more-link' );
+
+                $labels->name = __( 'DMG Read More Link Posts and Pages', 'dmg-rml' );
+
             }
+
         }
 
         // Always return the labels object.
@@ -198,14 +202,18 @@ class TaxBlockMarker {
 
         // Check that we are on the correct admin page before changing anything.
         if ( is_admin() && 'edit.php' === $pagenow ) {
+
             $current_taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_STRING );
             $current_term     = filter_input( INPUT_GET, 'term', FILTER_SANITIZE_STRING );
 
             if ( 'dmg_rml_block_marker' === $current_taxonomy && 'has-read-more-block' === $current_term ) {
+    
 				echo '<div class="notice notice-info"><p>';
-				echo esc_html__( 'This is a list of all posts that contain the DMG Read More Link block.', 'simple-read-more-link' );
+				    echo esc_html__( 'This is a list of all posts and pages that contain the DMG Read More Link block.', 'dmg-rml' );
 				echo '</p></div>';
+
             }
+
         }
 
     }
