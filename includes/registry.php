@@ -67,7 +67,7 @@ class Registry
         // CLI
         if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
-            $this->add('BlockFinderCli', new BlockFinderCli());
+            $this->add('CliBlockFinder', new CliBlockFinder());
 
         }
 
