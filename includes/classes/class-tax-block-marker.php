@@ -21,22 +21,13 @@ class TaxBlockMarker {
 		// DMG_RML Marker taxonomy.
 		add_action( 'init', array($this, 'register'), 0 );
 
-        add_action( 'pre_get_posts', array( $this, 'show_all_post_types_in_list' ) );
-
 		add_action( 'admin_menu', array( $this, 'add_posts_link_to_settings' ));
 
 		add_filter( 'admin_head', array( $this, 'admin_menu_highlight' ) );
 
-		add_filter( 'post_type_labels_post', array( $this, 'change_post_labels' ) );
-
-		add_action( 'all_admin_notices', array( $this, 'add_post_list_description' ) );
+		add_action( 'admin_notices', array( $this, 'add_post_list_description' ) );
 
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ), 99 );
-
-        // Custom column.
-        add_filter( 'manage_edit-post_columns', array( $this, 'add_post_type_column' ) );
-        add_action( 'manage_posts_custom_column', array( $this, 'render_post_type_column' ), 10, 2 );
-        add_action( 'manage_pages_custom_column', array( $this, 'render_post_type_column' ), 10, 2 );
 
     }
 
@@ -98,34 +89,8 @@ class TaxBlockMarker {
 
 
 
-    /**
-     * Includes posts and pages in the query for our custom screen.
-     *
-     * @param \WP_Query $query The main WordPress query object.
-     */
-    public function show_all_post_types_in_list( $query ) {
-
-        // We must only run this for the main query on the correct admin screen.
-        if ( ! is_admin() || ! $query->is_main_query() ) {
-            return;
-        }
-
-        // Check if we are on our specific filtered view.
-        $current_taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_STRING );
-        $current_term     = filter_input( INPUT_GET, 'term', FILTER_SANITIZE_STRING );
-
-        if ( 'dmg_rml_block_marker' === $current_taxonomy && 'has-read-more-block' === $current_term ) {
-
-            $query->set( 'post_type', array( 'post', 'page' ) );
-
-        }
-
-    }
-
-
-
-
 	public function add_posts_link_to_settings() {
+
 		add_submenu_page(
 			'options-general.php',
 			__( 'Posts with DMG Read More Link Block', 'dmg-rml' ),
@@ -134,6 +99,16 @@ class TaxBlockMarker {
 			// Use the destination URL as the menu slug.
 			'edit.php?taxonomy=dmg_rml_block_marker&term=has-read-more-block'
 		);
+
+		// add_submenu_page(
+		// 	'options-general.php',
+		// 	__( 'Posts with DMG Read More Link Block', 'dmg-rml' ),
+		// 	__( 'DMG Read More Link Posts and Pageshuhu', 'dmg-rml' ),
+		// 	'manage_options',
+		// 	// Use the destination URL as the menu slug.
+		// 	'edit.php?taxonomy=dmg_rml_block_marker&term=has-read-more-block&post_type=page'
+		// );
+
 	}
 
 
@@ -155,9 +130,56 @@ class TaxBlockMarker {
             // Force the "Settings" menu to be the active parent.
             $parent_file = 'options-general.php';
             
-            // Set the submenu file.
             $submenu_file = 'edit.php?taxonomy=dmg_rml_block_marker&term=has-read-more-block';
+
+            // For the 'Pages' screen, WordPress will override the parent. We fix this with JS (see below).
+            add_action( 'admin_footer-edit.php', array( $this, 'force_menu_highlight_script' ) );
+
         }
+
+    }
+
+
+
+    /**
+     * Gotta use JS for this (would have liked to achive a PHP solution but the Pages admin menu is particually stubborn).
+     */
+    public function force_menu_highlight_script() {
+
+        // Only run this script on the 'Pages' tab of our custom view.
+        $current_post_type = filter_input( INPUT_GET, 'post_type', FILTER_SANITIZE_STRING );
+
+        if ( 'page' !== $current_post_type ) {
+
+            return;
+
+        }
+
+        ?>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                // Define the classes to swap
+                const openClasses = ['wp-has-current-submenu', 'wp-menu-open'];
+                const closedClass = 'wp-not-current-submenu';
+
+                // --- Fix the 'Pages' Menu ---
+                // Select both the <li> and its direct <a> child
+                const pagesMenuElements = document.querySelectorAll('#menu-pages, #menu-pages > a.menu-top');
+                pagesMenuElements.forEach(function(element) {
+                    element.classList.remove(...openClasses);
+                    element.classList.add(closedClass);
+                });
+
+                // --- Fix the 'Settings' Menu ---
+                // Select both the <li> and its direct <a> child
+                const settingsMenuElements = document.querySelectorAll('#menu-settings, #menu-settings > a.menu-top');
+                settingsMenuElements.forEach(function(element) {
+                    element.classList.remove(closedClass);
+                    element.classList.add(...openClasses);
+                });
+            });
+        </script>
+        <?php
 
     }
 
@@ -165,53 +187,53 @@ class TaxBlockMarker {
 
 
     /**
-     * Changes the main title by filtering the 'post' post type's labels.
+     * Adds a description and a tabbed navigation to switch between post types.
      */
-    public function change_post_labels( $labels ) {
+    public function add_post_list_description() {
 
         global $pagenow;
 
         // Check that we are on the correct admin page before changing anything.
         if ( is_admin() && 'edit.php' === $pagenow ) {
-    
-            $current_taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_STRING );
-            $current_term     = filter_input( INPUT_GET, 'term', FILTER_SANITIZE_STRING );
-
-            if ( 'dmg_rml_block_marker' === $current_taxonomy && 'has-read-more-block' === $current_term ) {
-
-                $labels->name = __( 'DMG Read More Link Posts and Pages', 'dmg-rml' );
-
-            }
-
-        }
-
-        // Always return the labels object.
-        return $labels;
-
-    }
-
-
-
-
-    /**
-     * Adds a description below the title.
-     */
-    public function add_post_list_description() {
-
-		global $pagenow;
-
-        // Check that we are on the correct admin page before changing anything.
-        if ( is_admin() && 'edit.php' === $pagenow ) {
 
             $current_taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_STRING );
             $current_term     = filter_input( INPUT_GET, 'term', FILTER_SANITIZE_STRING );
 
             if ( 'dmg_rml_block_marker' === $current_taxonomy && 'has-read-more-block' === $current_term ) {
     
-				echo '<div class="notice notice-info"><p>';
-				    echo esc_html__( 'This is a list of all posts and pages that contain the DMG Read More Link block.', 'dmg-rml' );
-				echo '</p></div>';
+                // Display the main description for the screen.
+                echo '<div class="notice notice-info"><p>';
+                    echo esc_html__( 'This is a list of all items that contain the DMG Read More Link block. Use the tabs to switch between Posts and Pages.', 'dmg-rml' );
+                echo '</p></div>';
 
+                // --- Tab Implementation ---
+
+                // Determine the currently active tab from the URL, defaulting to 'post'.
+                $current_post_type = filter_input( INPUT_GET, 'post_type', FILTER_SANITIZE_STRING ) ?? 'post';
+            
+                // Base URL for our links.
+                $base_url = admin_url( 'edit.php' );
+
+                // The query arguments that are common to both tabs.
+                $common_args = array(
+                    'taxonomy' => 'dmg_rml_block_marker',
+                    'term'     => 'has-read-more-block',
+                );
+
+                // Build the specific URLs for each tab.
+                $posts_url = add_query_arg( array_merge( $common_args, array( 'post_type' => 'post' ) ), $base_url );
+                $pages_url = add_query_arg( array_merge( $common_args, array( 'post_type' => 'page' ) ), $base_url );
+
+                ?>
+                <h2 class="nav-tab-wrapper" style="margin-bottom: 15px;">
+                    <a href="<?php echo esc_url( $posts_url ); ?>" class="nav-tab <?php echo 'post' === $current_post_type ? 'nav-tab-active' : ''; ?>">
+                        <?php esc_html_e( 'Posts', 'dmg-rml' ); ?>
+                    </a>
+                    <a href="<?php echo esc_url( $pages_url ); ?>" class="nav-tab <?php echo 'page' === $current_post_type ? 'nav-tab-active' : ''; ?>">
+                        <?php esc_html_e( 'Pages', 'dmg-rml' ); ?>
+                    </a>
+                </h2>
+                <?php
             }
 
         }
@@ -241,68 +263,6 @@ class TaxBlockMarker {
                 array(),
                 '1.0.0'
             );
-
-        }
-
-    }
-
-
-
-
-    /**
-     * Adds a 'Post Type' column to the posts list table header.
-     */
-    public function add_post_type_column( $columns ) {
-    
-        global $pagenow;
-    
-        if ( is_admin() && 'edit.php' === $pagenow ) {
-    
-            $current_taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_STRING );
-            $current_term     = filter_input( INPUT_GET, 'term', FILTER_SANITIZE_STRING );
-
-            if ( 'dmg_rml_block_marker' === $current_taxonomy && 'has-read-more-block' === $current_term ) {
-
-                // Create a new columns array to insert the Post Type column after the title.
-                $new_columns = [];
-    
-                foreach ( $columns as $key => $title ) {
-
-                    $new_columns[ $key ] = $title;
-
-                    if ( 'title' === $key ) {
-
-                        $new_columns['post_type'] = __( 'Post Type', 'dmg-rml' );
-
-                    }
-
-                }
-
-                return $new_columns;
-
-            }
-
-        }
-
-        return $columns;
-
-    }
-
-    /**
-     * Renders the content for the custom 'Post Type' column.
-     */
-    public function render_post_type_column( $column_name, $post_id ) {
-        // This function only needs to check the column name, as the column
-        // will only be added on the correct screen.
-        if ( 'post_type' === $column_name ) {
-
-            $post_type_object = get_post_type_object( get_post_type( $post_id ) );
-
-            if ( $post_type_object ) {
-    
-                echo esc_html( $post_type_object->labels->singular_name );
-
-            }
 
         }
 
