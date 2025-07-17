@@ -21,6 +21,8 @@ class TaxBlockMarker {
 		// DMG_RML Marker taxonomy.
 		add_action( 'init', array($this, 'register'), 0 );
 
+        add_action( 'pre_get_posts', array( $this, 'show_all_post_types_in_list' ) );
+
 		add_action( 'admin_menu', array( $this, 'add_posts_link_to_settings' ));
 
 		add_filter( 'admin_head', array( $this, 'admin_menu_highlight' ) );
@@ -87,6 +89,33 @@ class TaxBlockMarker {
 		register_taxonomy( 'dmg_rml_block_marker', $post_types_array, $args );
 
 	}
+
+
+
+
+    /**
+     * Includes posts and pages in the query for our custom screen.
+     *
+     * @param \WP_Query $query The main WordPress query object.
+     */
+    public function show_all_post_types_in_list( $query ) {
+
+        // We must only run this for the main query on the correct admin screen.
+        if ( ! is_admin() || ! $query->is_main_query() ) {
+            return;
+        }
+
+        // Check if we are on our specific filtered view.
+        $current_taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_STRING );
+        $current_term     = filter_input( INPUT_GET, 'term', FILTER_SANITIZE_STRING );
+
+        if ( 'dmg_rml_block_marker' === $current_taxonomy && 'has-read-more-block' === $current_term ) {
+
+            $query->set( 'post_type', array( 'post', 'page' ) );
+
+        }
+
+    }
 
 
 
