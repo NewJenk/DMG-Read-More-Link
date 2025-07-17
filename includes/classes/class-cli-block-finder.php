@@ -12,7 +12,7 @@ if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
 /**
  * Finds posts containing the 'dmg-rml' block.
  */
-class BlockFinderCli extends \WP_CLI_Command {
+class CliBlockFinder extends \WP_CLI_Command {
 
     /**
      * The constructor is where we register the command.
