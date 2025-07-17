@@ -2,7 +2,7 @@
 
 ![License: GPL v3 or later](https://img.shields.io/badge/License-GPLv3%20or%20later-blue.svg?style=flat-square)
 ![Requires PHP: >= 7.4](https://img.shields.io/badge/PHP-%3E%3D%207.4-blue.svg?style=flat-square)
-![WordPress Tested: 6.8.2](https://img.shields.io/badge/WordPress-tested%20up%20to%206.8.1-brightgreen.svg?style=flat-square)
+![WordPress Tested: 6.8.2](https://img.shields.io/badge/WordPress-tested%20up%20to%206.8.2-brightgreen.svg?style=flat-square)
 ![GitHub issues](https://img.shields.io/github/issues/NewJenk/DMG-Read-More-Link?style=flat-square)
 ![GitHub stars](https://img.shields.io/github/stars/NewJenk/DMG-Read-More-Link?style=flat-square)
 
