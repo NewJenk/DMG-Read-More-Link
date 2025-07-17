@@ -1,0 +1,28 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "dmg-rml/read-more-link",
+	"version": "1.0.0",
+	"title": "DMG Read More Link",
+	"category": "text",
+	"description": "Easily add a Read More link to your posts.",
+	"supports": {
+		"html": false
+	},
+	"attributes": {
+		"postID": {
+			"type": "integer",
+			"default": null
+		}
+	},
+	"keywords": [
+		"read",
+		"more",
+		"post",
+		"link",
+		"dmg"
+	],
+	"textdomain": "dmg-rml",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
+}

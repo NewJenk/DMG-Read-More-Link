@@ -1,0 +1,241 @@
+# Copyright (C) 2025 Shaun Jenkins
+# This file is distributed under the GPLv3 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: DMG Read More Link 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dmg-read-more-link\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-07-17T09:27:59+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.11.0\n"
+"X-Domain: dmg-rml\n"
+
+#. Plugin Name of the plugin
+#: dmg-read-more-link.php
+msgid "DMG Read More Link"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: dmg-read-more-link.php
+msgid "https://github.com/NewJenk/DMG-Read-More-Link"
+msgstr ""
+
+#. Description of the plugin
+#: dmg-read-more-link.php
+msgid "A dynamic WordPress block that allows you to easily search for and link to other posts on your site, prepended with 'Read More: '."
+msgstr ""
+
+#. Author of the plugin
+#: dmg-read-more-link.php
+msgid "Shaun Jenkins"
+msgstr ""
+
+#. Author URI of the plugin
+#: dmg-read-more-link.php
+msgid "https://shaunjenkins.com/"
+msgstr ""
+
+#: includes/classes/class-blocks.php:67
+msgid "Read More: %s"
+msgstr ""
+
+#: includes/classes/class-tax-block-marker.php:49
+msgctxt "taxonomy general name"
+msgid "DMG_RML Marker"
+msgstr ""
+
+#: includes/classes/class-tax-block-marker.php:50
+msgctxt "taxonomy singular name"
+msgid "DMG_RML Marker"
+msgstr ""
+
+#: includes/classes/class-tax-block-marker.php:51
+msgid "Search DMG_RML Marker"
+msgstr ""
+
+#: includes/classes/class-tax-block-marker.php:52
+msgid "All DMG_RML Marker"
+msgstr ""
+
+#: includes/classes/class-tax-block-marker.php:53
+msgid "Parent DMG_RML Marker"
+msgstr ""
+
+#: includes/classes/class-tax-block-marker.php:54
+msgid "Parent DMG_RML Marker:"
+msgstr ""
+
+#: includes/classes/class-tax-block-marker.php:55
+msgid "Edit DMG_RML Marker"
+msgstr ""
+
+#: includes/classes/class-tax-block-marker.php:56
+msgid "Update DMG_RML Marker"
+msgstr ""
+
+#: includes/classes/class-tax-block-marker.php:57
+msgid "Create DMG_RML Marker"
+msgstr ""
+
+#: includes/classes/class-tax-block-marker.php:58
+msgid "New DMG_RML Marker Name"
+msgstr ""
+
+#: includes/classes/class-tax-block-marker.php:59
+msgid "Manage DMG_RML Marker"
+msgstr ""
+
+#: includes/classes/class-tax-block-marker.php:60
+msgid "&larr; Go to DMG_RML Marker"
+msgstr ""
+
+#: includes/classes/class-tax-block-marker.php:61
+msgid "No DMG_RML Marker found."
+msgstr ""
+
+#: includes/classes/class-tax-block-marker.php:62
+msgid "No DMG_RML Marker"
+msgstr ""
+
+#. Translators: %d is a placeholder for the numeric Post ID.
+#: build/blocks/read-more-link/edit.js:2
+#: build/blocks/read-more-link/index.js:2
+#: src/components/FetchPosts.js:32
+msgid "ID: %d"
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/components/FetchPosts.js:94
+msgid "Previous page"
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/components/FetchPosts.js:121
+msgid "Next page"
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/components/FetchPosts.js:249
+msgid "Error loading content:"
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/components/DisplayPostTitle.js:16
+msgid "Loading..."
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/components/DisplayPostTitle.js:25
+msgid "Post unavailable. Please choose another post."
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/components/PostsList.js:120
+msgid "Selected Post"
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/components/PostsList.js:151
+msgid "Remove"
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/components/PostsList.js:153
+msgid "Remove post"
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/components/PostsList.js:164
+msgid "No post selected"
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/components/PostsList.js:177
+msgid "Type to search or enter an ID..."
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/components/PostsList.js:178
+msgid "Search"
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/components/PostsList.js:192
+msgid "Numeric ID detected. Searching by Post ID."
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/components/PostsList.js:201
+msgid "Search for \"%s\" as text instead?"
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/components/PostsList.js:99
+msgid "Error: Could not determine the full REST API URL for the post type \"%s\"."
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/blocks/read-more-link/edit.js:37
+msgid "Read More: <DisplayPostTitle/>"
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/blocks/read-more-link/edit.js:51
+msgid "Toggle Settings"
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/blocks/read-more-link/edit.js:65
+msgid "Choose Post"
+msgstr ""
+
+#: build/blocks/read-more-link/index.js:2
+#: src/blocks/read-more-link/edit.js:82
+msgid "Please select a post from the sidebar."
+msgstr ""
+
+#: build/blocks/read-more-link/block.json
+#: src/blocks/read-more-link/block.json
+msgctxt "block title"
+msgid "DMG Read More Link"
+msgstr ""
+
+#: build/blocks/read-more-link/block.json
+#: src/blocks/read-more-link/block.json
+msgctxt "block description"
+msgid "Easily add a Read More link to your posts."
+msgstr ""
+
+#: build/blocks/read-more-link/block.json
+#: src/blocks/read-more-link/block.json
+msgctxt "block keyword"
+msgid "read"
+msgstr ""
+
+#: build/blocks/read-more-link/block.json
+#: src/blocks/read-more-link/block.json
+msgctxt "block keyword"
+msgid "more"
+msgstr ""
+
+#: build/blocks/read-more-link/block.json
+#: src/blocks/read-more-link/block.json
+msgctxt "block keyword"
+msgid "post"
+msgstr ""
+
+#: build/blocks/read-more-link/block.json
+#: src/blocks/read-more-link/block.json
+msgctxt "block keyword"
+msgid "link"
+msgstr ""
+
+#: build/blocks/read-more-link/block.json
+#: src/blocks/read-more-link/block.json
+msgctxt "block keyword"
+msgid "dmg"
+msgstr ""
